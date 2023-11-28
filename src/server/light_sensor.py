@@ -1,7 +1,7 @@
 from datetime import datetime
 import api_handler
 
-def process_light_sensor(lux_data, is_light_on, config):
+def process_light_sensor(lux_data, is_on, config):
     
     #construct api url with query string parameters
     url = construct_api_url(config)
@@ -10,19 +10,20 @@ def process_light_sensor(lux_data, is_light_on, config):
     result = api_handler.get_api_data(url)  
     
     lux = int(lux_data)
+    current_state = bool(is_on)
     lux_limit = int(config.get('server', 'brightlux'))
     
     #if it is dark and light is off then return status True.
-    if lux < lux_limit and is_light_on == False and result == True:
+    if lux < lux_limit and result == True:
         return True
     
     #else if it is clear or out of schedule return false to turn off the light
-    elif (lux > lux_limit and is_light_on == True) or result == False:
+    elif lux > lux_limit or result == False:
         return False
     
     #else return the current state
     else:
-        return is_light_on
+        return current_state
 
 def construct_api_url(config):
     apir_url = config.get("server", "api_url")

@@ -1,7 +1,7 @@
 from datetime import datetime
 import api_handler
 
-def process_temp_sensor(temprature_data, is_fan_on, config):
+def process_temp_sensor(temprature_data, current_state, config):
     #construct api url with query string parameters
     url = construct_api_url(config)
     #get the result from api either as true or false
@@ -9,18 +9,19 @@ def process_temp_sensor(temprature_data, is_fan_on, config):
     result = api_handler.get_api_data(url)   
          
     temprature = float(temprature_data)
+    is_on = bool(current_state)
     temprature_limit = int(config.get('server', 'hightemp'))
     
     #if temprature is 25C or more turn on the fan and return the status True.
-    if temprature > temprature_limit and is_fan_on == False and result == True:
+    if temprature > temprature_limit and result == True:
         return True
     #else if temprature is less than 25C turn off the fan and return False.
-    elif (temprature < temprature_limit and is_fan_on == True) or result == False:
+    elif temprature < temprature_limit or result == False:
         return False  
     
     #else return the current state
     else:
-        return is_fan_on
+        return is_on
     
     
 def construct_api_url(config):
