@@ -3,33 +3,34 @@ import config
 
 def set_mode(server_res, current_state):
     
+    cnfg = config.getconfig()
+    fan_GPIO_pin = int(cnfg.get('client', 'FanGPIOPin'))
+    
     #if fan is already on and server response is false then turn in off
     if (current_state == True and server_res == False):
-        turn_off_fan()
+        turn_off_fan(fan_GPIO_pin)
         return False
     
     elif (current_state == False and server_res == True):
-        turn_fan_on()
+        turn_fan_on(fan_GPIO_pin)
         return True
         
     return current_state
 
-def turn_fan_on():
+def turn_fan_on(GPIO_pin):
     
-    cnfg = config.getconfig()
-    fan_GPIO_pin = cnfg.get('client', 'FanGPIOPin')
-    set_GPIO(fan_GPIO_pin)
+    set_GPIO(GPIO_pin)
     
-    GPIO.output(fan_GPIO_pin, GPIO.HIGH)
+    GPIO.output(GPIO_pin, GPIO.HIGH)
     print("Fan on")
 
-def turn_off_fan():
-    fan_GPIO_pin = config.getconfig()
-    set_GPIO(fan_GPIO_pin)
-    GPIO.output(12,GPIO.LOW)
+def turn_off_fan(GPIO_pin):
+
+    set_GPIO(GPIO_pin)
+    GPIO.output(GPIO_pin, GPIO.LOW)
     print("Fan off")
 
 def set_GPIO(pin_no):
-    GPIO.setmode(GPIO.BOARD)
+    GPIO.setmode(GPIO.BCM)
     GPIO.setup(pin_no, GPIO.OUT)
     
