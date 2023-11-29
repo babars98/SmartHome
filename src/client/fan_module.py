@@ -31,6 +31,6 @@ def turn_off_fan(GPIO_pin):
     print("Fan off")
 
 def set_GPIO(pin_no):
-    GPIO.setmode(GPIO.BCM)
+    GPIO.setmode(GPIO.BOARD)
     GPIO.setup(pin_no, GPIO.OUT)
     
