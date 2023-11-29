@@ -31,7 +31,7 @@ def handle_client(client_socket):
         result = identify_and_process_sensor(data)
         client_socket.sendall(result.to_bytes())
 
-    except Exception as e:
+    except KeyboardInterrupt as e:
         print(f"Error: {e}")
 
     finally:
@@ -46,7 +46,6 @@ def identify_and_process_sensor(data):
        cond = False
     else:
         cond = True
-    
     
     if sensor_with_data[0] == config.get('common', 'tempsensoridentifier'):
             return temp_sensor.process_temp_sensor(sensor_with_data[1], cond, config)
