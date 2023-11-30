@@ -15,11 +15,11 @@ def start_client(config):
         sensor_pin = int(config.get('client', 'lightsensorpin'))
         global is_light_on
         while True:      
-            light_data = read_sensor_data() 
+            light_data = read_sensor_data(sensor_pin) 
             data = ":".join([light_id, str(light_data), str(is_light_on)])
 
             res = send_data(data)
-            print('Fan On', is_light_on)
+            print('Light On', is_light_on)
             is_light_on = light_module.set_mode(res, is_light_on)
             
             #wait for some time before sending next data
