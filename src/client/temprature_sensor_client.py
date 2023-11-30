@@ -1,7 +1,6 @@
 from time import sleep
 import config
 from DHT20 import DHT20
-import socket
 import client_socket
 import fan_module
 
@@ -34,17 +33,17 @@ def start_client(config):
         
 def send_data(data):
     try:    
-        sockt = client_socket.create_connection(socket, config)
-        sockt.sendall(data.encode())
-        res = sockt.recv(1024)
+        socket = client_socket.create_connection(config)
+        socket.sendall(data.encode())
+        res = socket.recv(1024)
         res = bool.from_bytes(res)
-        sockt.close()
+        socket.close()
         return res
     except Exception as e:
         print(f"Error: {e}")
         
     finally:
-        sockt.close()
+        socket.close()
         
 #Initialize the DHT20 Temprature sensor
 def initialize():
