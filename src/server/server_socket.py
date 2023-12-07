@@ -40,7 +40,7 @@ def handle_client(client_socket):
 
 def identify_and_process_sensor(data):
     decoded_string = data.decode()
-    sensor_with_data = decoded_string.split(':')
+    sensor_with_data = decoded_string.split(',')
     time = sensor_with_data[2]
     
     if sensor_with_data[0] == config.get('common', 'tempsensoridentifier'):

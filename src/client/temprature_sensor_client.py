@@ -22,12 +22,15 @@ def start_client(config):
             #if the temprature is hight then send request to server
             if is_temp_high == True:
                 time = datetime.now().time
-                data = ":".join([temp_id, str(temprature), str(time)])        
+                data = ",".join([temp_id, str(temprature), str(time)])        
                 res = client_socket.send_data(data)
                 print('is_fan_on', is_fan_on)
                 is_fan_on = temp_businesslogic.set_mode(res, is_fan_on)
             
             #wait for some time before sending next data
+            elif is_fan_on == True:
+                is_fan_on = temp_businesslogic.set_mode(False, is_fan_on)
+                
             sleep(delay)
             
     except Exception as e:

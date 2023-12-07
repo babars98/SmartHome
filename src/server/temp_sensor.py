@@ -2,6 +2,7 @@ import config
 import api_handler
 
 def process_temp_sensor(temprature_data, time):
+    
     #construct api url with query string parameters
     url = construct_api_url(time)
     #get the result from api either as true or false

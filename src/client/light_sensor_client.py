@@ -23,13 +23,16 @@ def start_client(config):
             is_low_light = light_businesslogic.check_light_level(int(light_data))
             
             if is_low_light == True:
-                time = datetime.now().time()
-                data = ":".join([light_id, str(light_data), str(time)])
+                time = str(datetime.now().time())
+                data = ",".join([light_id, str(light_data), str(time)])
 
                 res = client_socket.send_data(data)
                 print('Light On', is_light_on)
                 is_light_on = light_businesslogic.set_mode(res, is_light_on)
-            
+                
+            elif is_light_on == True:
+                is_light_on = light_businesslogic.set_mode(False, is_light_on)
+                
             #wait for some time before sending next data
             sleep(delay)
             
