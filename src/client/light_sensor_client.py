@@ -1,8 +1,9 @@
 from time import sleep
 import RPi.GPIO as GPIO
+from datetime import datetime
 import config
 import client_socket
-import light_module
+import light_businesslogic
 
 #global variable to keep track the fan and light status
 is_light_on = False
@@ -14,13 +15,20 @@ def start_client(config):
         delay = int(config.get('client', 'lightdelay'))
         sensor_pin = int(config.get('client', 'lightsensorpin'))
         global is_light_on
+        
+        #repeat the sensor read after a delay
         while True:      
             light_data = read_sensor_data(sensor_pin) 
-            data = ":".join([light_id, str(light_data), str(is_light_on)])
+            
+            is_low_light = light_businesslogic.check_light_level(int(light_data))
+            
+            if is_low_light == True:
+                time = datetime.now().time()
+                data = ":".join([light_id, str(light_data), str(time)])
 
-            res = send_data(data)
-            print('Light On', is_light_on)
-            is_light_on = light_module.set_mode(res, is_light_on)
+                res = client_socket.send_data(data)
+                print('Light On', is_light_on)
+                is_light_on = light_businesslogic.set_mode(res, is_light_on)
             
             #wait for some time before sending next data
             sleep(delay)
@@ -30,20 +38,6 @@ def start_client(config):
         
     finally:
         sleep(delay)
-        
-def send_data(data):
-    try:    
-        sockt = client_socket.create_connection(config)
-        sockt.sendall(data.encode())
-        res = sockt.recv(1024)
-        res = bool.from_bytes(res)
-        sockt.close()
-        return res
-    except Exception as e:
-        print(f"Error: {e}")
-        
-    finally:
-        sockt.close()   
 
 #Read the data from sensor
 def read_sensor_data(sensor_pin):

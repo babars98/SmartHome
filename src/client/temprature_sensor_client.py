@@ -1,8 +1,9 @@
 from time import sleep
+from datetime import datetime
 import config
 from DHT20 import DHT20
 import client_socket
-import fan_module
+import temp_businesslogic
 
 #global variable to keep track the fan and light status
 is_fan_on = False
@@ -16,11 +17,15 @@ def start_client(config):
         global is_fan_on
         while True:      
             temprature = read_sensor_data(dht20) 
-            data = ":".join([temp_id, str(temprature), str(is_fan_on)])
-
-            res = send_data(data)
-            print('is_fan_on', is_fan_on)
-            is_fan_on = fan_module.set_mode(res, is_fan_on)
+            is_temp_high = temp_businesslogic.check_temp_level(int(temprature))
+            
+            #if the temprature is hight then send request to server
+            if is_temp_high == True:
+                time = datetime.now().time
+                data = ":".join([temp_id, str(temprature), str(time)])        
+                res = client_socket.send_data(data)
+                print('is_fan_on', is_fan_on)
+                is_fan_on = temp_businesslogic.set_mode(res, is_fan_on)
             
             #wait for some time before sending next data
             sleep(delay)
@@ -30,21 +35,7 @@ def start_client(config):
         
     finally:
         sleep(delay)
-        
-def send_data(data):
-    try:    
-        socket = client_socket.create_connection(config)
-        socket.sendall(data.encode())
-        res = socket.recv(1024)
-        res = bool.from_bytes(res)
-        socket.close()
-        return res
-    except Exception as e:
-        print(f"Error: {e}")
-        
-    finally:
-        socket.close()
-        
+           
 #Initialize the DHT20 Temprature sensor
 def initialize():
     # The first  parameter is to select i2c0 or i2c1

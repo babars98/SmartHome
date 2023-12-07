@@ -18,3 +18,21 @@ def set_mode(server_res, current_state):
         return True
         
     return current_state
+
+def check_temp_level(temprature):
+    
+    cnfg = config.getconfig()
+    temprature_limit = int(cnfg.get('client', 'hightemp'))
+    flag = False
+    
+    if temprature > temprature_limit:
+        flag = True
+        
+    #else if temprature is less than 25C turn off the fan and return False.
+    elif temprature < temprature_limit:
+        flag = False  
+    
+    else:
+        flag = False
+        
+    return flag

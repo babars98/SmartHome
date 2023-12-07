@@ -19,3 +19,19 @@ def set_mode(server_res, current_state):
         
     return current_state
 
+def check_light_level(lightdata):
+    cnfg = config.getconfig()
+    bright_light = int(cnfg.get('client', 'brightLight'))
+    low_light = int(cnfg.get('client', 'lowLight'))
+
+    #if it is dark then return status True.
+    if lightdata == low_light:
+        return True
+    
+    #else if it is clear return false
+    elif lightdata == bright_light:
+        return False
+    
+    #else return the current state
+    else:
+        return False
