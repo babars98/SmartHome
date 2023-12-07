@@ -21,7 +21,7 @@ def start_client(config):
             
             #if the temprature is hight then send request to server
             if is_temp_high == True:
-                time = datetime.now().time
+                time = datetime.now().time()
                 data = ",".join([temp_id, str(temprature), str(time)])        
                 res = client_socket.send_data(data)
                 print('is_fan_on', is_fan_on)

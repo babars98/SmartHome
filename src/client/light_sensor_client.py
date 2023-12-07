@@ -23,7 +23,7 @@ def start_client(config):
             is_low_light = light_businesslogic.check_light_level(int(light_data))
             
             if is_low_light == True:
-                time = str(datetime.now().time())
+                time = datetime.now().time()
                 data = ",".join([light_id, str(light_data), str(time)])
 
                 res = client_socket.send_data(data)
