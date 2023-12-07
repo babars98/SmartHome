@@ -41,16 +41,12 @@ def handle_client(client_socket):
 def identify_and_process_sensor(data):
     decoded_string = data.decode()
     sensor_with_data = decoded_string.split(':')
-    cond = False
-    if sensor_with_data[2] == 'False':
-       cond = False
-    else:
-        cond = True
+    time = sensor_with_data[2]
     
     if sensor_with_data[0] == config.get('common', 'tempsensoridentifier'):
-            return temp_sensor.process_temp_sensor(sensor_with_data[1], cond, config)
+        return temp_sensor.process_temp_sensor(sensor_with_data[1], time)
     elif sensor_with_data[0] == config.get('common', 'lightsensoridentifier'):
-        return light_sensor.process_light_sensor(sensor_with_data[1], cond, config)
+        return light_sensor.process_light_sensor(sensor_with_data[1], time)
     else:
         return False
 
