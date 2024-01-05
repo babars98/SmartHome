@@ -10,11 +10,11 @@ def process_light_sensor(light_data, time):
     #depending on schedule
     result = api_handler.get_api_data(url)  
     
-    #if it is dark and light is off then return status True.
+    #if Current Time is between the set schedule/Interval, return True.
     if result == True:
         return True
     
-    #else if it is clear or out of schedule return false to turn off the light
+    #else if Current Time is not between the set schedule/Interval, return False.
     elif result == False:
         return False
     
@@ -26,6 +26,6 @@ def construct_api_url(config, time, data):
     apir_url = config.get("server", "api_url")
     sensor_id = config.get("server", "light_sensor_id")
     
-    url = "".join([apir_url, sensor_id, '/', time, '/', data])
+    url = "".join([apir_url, sensor_id, '/', time, '/', str(data)])
     
     return url
